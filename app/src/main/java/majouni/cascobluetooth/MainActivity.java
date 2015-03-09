@@ -3,6 +3,7 @@ package majouni.cascobluetooth;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -11,8 +12,11 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("MA-1", "onCreate-principio)");
 
         if (savedInstanceState == null) {
+            Log.d("MA-2", "onCreate-if)");
+
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             BluetoothChatFragment fragment = new BluetoothChatFragment();
             transaction.replace(R.id.sample_content_fragment, fragment);

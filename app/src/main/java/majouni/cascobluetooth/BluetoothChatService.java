@@ -44,6 +44,7 @@ public class BluetoothChatService {
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
     public BluetoothChatService(Context context, Handler handler) {
+        Log.d("B.chat.serv-1", "BluetoothChatService-le pasamos el contexto y el handler)");
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
@@ -55,6 +56,8 @@ public class BluetoothChatService {
      * @param state An integer defining the current connection state
      */
     private synchronized void setState(int state) {
+        Log.d("B.chat.serv-2", "setState- synchronized void");
+
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
@@ -65,6 +68,8 @@ public class BluetoothChatService {
      * Return the current connection state.
      */
     public synchronized int getState() {
+        Log.d("B.chat.serv-3", "getState- synchronized int (return del estado de la conexion");
+
         return mState;
     }
 
@@ -73,15 +78,20 @@ public class BluetoothChatService {
      * session in listening (server) mode. Called by the Activity onResume()
      */
     public synchronized void start() {
+        Log.d("B.chat.serv-4", "start- synchronized void (abrimos el servicio de chat)");
 
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {
+            Log.d("B.chat.serv-5", "start-if1 (cancelamos todos los intentos de abrir conexion con thread)");
+
             mConnectThread.cancel();
             mConnectThread = null;
         }
 
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {
+            Log.d("B.chat.serv-6", "start-if2 (cancelamos todos los threads con connexion)");
+
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
@@ -90,6 +100,8 @@ public class BluetoothChatService {
 
         // Start the thread to listen on a BluetoothServerSocket
         if (mSecureAcceptThread == null) {
+            Log.d("B.chat.serv-6", "start-if3 (empezar el thread para escuchar el BluetoothServerSocket)");
+
             mSecureAcceptThread = new AcceptThread(true);
             mSecureAcceptThread.start();
         }
@@ -97,6 +109,7 @@ public class BluetoothChatService {
 
 
     private class AcceptThread extends Thread {
+
         // The local server socket
         private final BluetoothServerSocket mmServerSocket;
         private String mSocketType;
@@ -105,17 +118,19 @@ public class BluetoothChatService {
         public AcceptThread(boolean secure) {
             BluetoothServerSocket tmp = null;
             try {
-
-                    tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
+                Log.d("B.chat.serv-7", "AcceptThread-AcceptThread-try");
+                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
                             MY_UUID_SECURE);
             } catch (IOException e) {
-                Log.d("$$ Error", "SError de conexion : "+ e);
+                Log.d("B.chat.serv-8-ERROR", "AcceptThread-AcceptThread-catch");
 
             }
             mmServerSocket = tmp;
         }
 
         public void run() {
+
+            Log.d("B.chat.serv-9", "AcceptThread-run()");
 
             setName("AcceptThread Secure");
 
@@ -124,16 +139,19 @@ public class BluetoothChatService {
             // Listen to the server socket if we're not connected
             while (mState != STATE_CONNECTED) {
                 try {
+                    Log.d("B.chat.serv-10", "while- escuchar el socket del servidor si no estamos conectados");
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
-                    Log.e( "$$ Error $$", "Socket Type: " + mSocketType + "accept() failed", e);
+                    Log.e( "B.chat.serv-11-ERROR", "Socket Type: " + mSocketType + "accept() failed", e);
                     break;
                 }
 
                 // If a connection was accepted
                 if (socket != null) {
+                    Log.e( "B.chat.serv-12", "if-si se ha aceptado una conexion");
+
                     synchronized (BluetoothChatService.this) {
                         switch (mState) {
                             case STATE_LISTEN:

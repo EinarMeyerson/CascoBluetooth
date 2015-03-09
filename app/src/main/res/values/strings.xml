@@ -1,0 +1,20 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">CascoBluetooth</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for Devices</string>
+    <string name="secure_connect">Connect a device - Secure</string>
+    <string name="insecure_connect">Connect a device - Insecure</string>
+    <string name="discoverable">Make discoverable</string>
+    <string name="send">Send</string>
+    <string name="not_connected">No estas conectado con otro dispositivo</string>
+    <string name="bt_not_enabled_leaving">Bluetooth no esta activado. Dejar Bluetooth Chat.</string>
+    <string name="title_connecting">conectando...</string>
+    <string name="title_connected_to">conectando con<xliff:g id="device_name">%1$s</xliff:g></string>
+    <string name="title_not_connected">no conectado</string>none_paired
+    <string name="none_paired">No hay conectividad entre los dispositivos</string>scanning
+    <string name="scanning">Escaneando dispositivos</string>
+    <string name="none_found">Dispositivo no encontrados</string>
+    <string name="select_device">Distositivo selecionado</string>
+</resources>

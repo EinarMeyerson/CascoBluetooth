@@ -63,6 +63,7 @@ public class BluetoothChatFragment extends Fragment {
             Toast.makeText(activity, "Bluetooth no disponible", Toast.LENGTH_LONG).show();
             activity.finish();
         }
+        Log.d("B.Chat.Frag."," 1- OnCreate: cargamos el bluetooth adarper y comprovamos si es nulo");
     }
 
     @Override
@@ -72,18 +73,21 @@ public class BluetoothChatFragment extends Fragment {
         //si BT no encendido pregunta para encenderlo
         //setupChar() sera llamada durante onActivityResult
 
+        Log.d("B.Chat.Frag"," 2- OnStart: comprovamos si esta activado el bluetooth , sino solicitamos encerderlo");
         if (!mBluetoothAdapter.isEnabled()){
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-         }
+        }
         else if (mChatService == null)
         {
+            Log.d("B.Chat.Frag"," 3- OnStart: si BT encendido llamamos a la funcion stupChat()");
             setupChat();
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("B.Chat.Frag"," 4- onCreateView: inicializamos el layout fragment_bleutooth_chat");
         return inflater.inflate(R.layout.fragment_bleutooth_chat, container, false);
     }
 
@@ -92,6 +96,7 @@ public class BluetoothChatFragment extends Fragment {
         mConversationView = (ListView) view.findViewById(R.id.in);
         mOutEditText =(EditText) view.findViewById(R.id.edit_text_out);
         mSendButton = (Button) view.findViewById(R.id.button_send);
+        Log.d("B.Chat.Frag"," 5- onViewCreated: inicializamos el boton, el listview y el editext del fragment_bleutooth_chat");
     }
 
 
@@ -115,7 +120,7 @@ public class BluetoothChatFragment extends Fragment {
         if (mChatService != null) {
             mChatService.stop();
         }
-        }
+    }
 
     private void setupChat() {
 
@@ -143,6 +148,7 @@ public class BluetoothChatFragment extends Fragment {
 
         //inicializamos el BluetoothChatService para realizar las conexiones Bluetooth
         mChatService = new BluetoothChatService(getActivity(), mHandler);
+        Log.d("B.Chat.Frag"," 6 -setupChat(): Inicializamos el B.Chat.Service");
 
         // Initialize the buffer for outgoing messages
         //inicializa el buffer para los mensajes de salida
@@ -168,17 +174,18 @@ public class BluetoothChatFragment extends Fragment {
      * @param message A string of text to send.
      */
     private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
+        // comprueva que estamos conectados antes de intentar nada
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Check that there's actually something to send
+        // comprueva que hay algo que enviar
         if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
+            // codifica el mensaje en bytes y se lo traspasa al bluethot service
             byte[] send = message.getBytes();
             mChatService.write(send);
+            Log.d("B.Chat.Frag"," 7 -sendMessage(): pasamos el mensaje codificado en bytes al B.Chat:Service (funcion write)");
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
@@ -193,8 +200,11 @@ public class BluetoothChatFragment extends Fragment {
             = new TextView.OnEditorActionListener() {
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
             // If the action is a key-up event on the return key, send the message
+
+            Log.d("B.Chat.Frag"," 8 - OnEditorActionListener: ni zorra de que hace esto");
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
                 String message = view.getText().toString();
+                Log.d("B.Chat.Frag"," 9 - OnEditorActionListener: diria que manda el mensaje");
                 sendMessage(message);
             }
             return true;
@@ -242,6 +252,7 @@ public class BluetoothChatFragment extends Fragment {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Log.d("B.Chat.Frag"," 10 - Handler: gestiona los mensajes que le pasa el B.Chat.Service");
             FragmentActivity activity = getActivity();
             switch (msg.what) {
                 case Constants.MESSAGE_STATE_CHANGE:
@@ -260,22 +271,24 @@ public class BluetoothChatFragment extends Fragment {
                     }
                     break;
                 case Constants.MESSAGE_WRITE:
+                    Log.d("B.Chat.Frag"," 11 - Handler: escrive el mensaje en el chat");
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
+                    mConversationArrayAdapter.add("Yo:  " + writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
+                    Log.d("B.Chat.Frag"," 11 - Handler: escrive el mensaje en el chat");
                     mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
                     if (null != activity) {
-                        Toast.makeText(activity, "Connected to "
+                        Toast.makeText(activity, "Conectado con "
                                 + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -326,6 +339,7 @@ public class BluetoothChatFragment extends Fragment {
      */
     private void connectDevice(Intent data, boolean secure) {
         // Get the device MAC address
+        Log.d("B.Chat.Frag"," 11 - connectDevice: cogemos la MAC del dispositivo");
         String address = data.getExtras()
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         // Get the BluetoothDevice object

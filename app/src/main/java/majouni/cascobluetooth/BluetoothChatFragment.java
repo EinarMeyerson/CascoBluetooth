@@ -27,6 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 /**
  * Created by majouni on 2/03/15.
  */
@@ -275,14 +277,22 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Yo:  " + writeMessage);
+
+                    mConversationArrayAdapter.add("Yo : " + writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Log.d("B.Chat.Frag"," 11 - Handler: escrive el mensaje en el chat");
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    Log.d("B.Chat.Frag"," 11.2 - Handler: escrive el mensaje en el chat");
+
+                    //sacar la fecha de actualizacon
+                    Calendar c= Calendar.getInstance();
+                    int hora = c.get(Calendar.HOUR_OF_DAY);
+                    int dia = c.get(Calendar.DAY_OF_MONTH);
+                    int mes = c.get(Calendar.MONTH);
+                    int año =c.get(Calendar.YEAR);
+                    mConversationArrayAdapter.add(hora+ " "+ dia + "/"+mes+"/"+año+ " :  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name

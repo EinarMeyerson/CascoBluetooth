@@ -260,14 +260,17 @@ public class BluetoothChatFragment extends Fragment {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
+                            Log.d("#### pruevas ###", "Comprovanco estado de la conexion");
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
                             mConversationArrayAdapter.clear();
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
+                            Log.d("#### pruevas ###", "Comprovanco estado de la conexion: Conectado");
                             setStatus(R.string.title_connecting);
                             break;
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
+                            Log.d("#### pruevas ###", "Comprovanco estado de la conexion : no conectado");
                             setStatus(R.string.title_not_connected);
                             break;
                     }
@@ -289,10 +292,11 @@ public class BluetoothChatFragment extends Fragment {
                     //sacar la fecha de actualizacon
                     Calendar c= Calendar.getInstance();
                     int hora = c.get(Calendar.HOUR_OF_DAY);
+                    int min = c.get(Calendar.MINUTE);
                     int dia = c.get(Calendar.DAY_OF_MONTH);
                     int mes = c.get(Calendar.MONTH);
                     int año =c.get(Calendar.YEAR);
-                    mConversationArrayAdapter.add(hora+ " "+ dia + "/"+mes+"/"+año+ " :  " + readMessage);
+                    mConversationArrayAdapter.add(hora+":"+min+ " "+ dia + "/"+mes+1+"/"+año+ " :  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name

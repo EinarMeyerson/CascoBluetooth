@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Button;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ public class BluetoothChatService {
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
+    private Button mSendButton;
 
     //constantes que indican el estado de la conexion actual
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -411,6 +413,10 @@ public class BluetoothChatService {
         bundle.putString(Constants.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
+
+        Message msg2 = mHandler.obtainMessage(Constants.MESSAGE_CAMBIO_BUTTON);
+        mHandler.sendMessage(msg2);
+
 
         // Start the service over to restart listening mode
         BluetoothChatService.this.start();

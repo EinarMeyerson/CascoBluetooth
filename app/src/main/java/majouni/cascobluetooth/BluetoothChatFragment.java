@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +40,6 @@ public class BluetoothChatFragment extends Fragment {
 
 
     private ListView mConversationView;
-    private EditText mOutEditText;
     private Button mSendButton;
 
 
@@ -96,7 +94,7 @@ public class BluetoothChatFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mConversationView = (ListView) view.findViewById(R.id.in);
-        mOutEditText =(EditText) view.findViewById(R.id.edit_text_out);
+        //mOutEditText =(EditText) view.findViewById(R.id.edit_text_out);
         mSendButton = (Button) view.findViewById(R.id.button_send);
         Log.d("B.Chat.Frag"," 5- onViewCreated: inicializamos el boton, el listview y el editext del fragment_bleutooth_chat");
     }
@@ -133,7 +131,7 @@ public class BluetoothChatFragment extends Fragment {
 
         mConversationView.setAdapter(mConversationArrayAdapter);
 
-        mOutEditText.setOnEditorActionListener(mWriteListener);
+       // mOutEditText.setOnEditorActionListener(mWriteListener);
 
         // inicializa el boton de enviar con un clicklistener
         mSendButton.setOnClickListener(new View.OnClickListener() {
@@ -141,8 +139,8 @@ public class BluetoothChatFragment extends Fragment {
                 // Send a message using content of the edit text widget
                 View view = getView();
                 if (null != view) {
-                    TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
-                    String message = textView.getText().toString();
+                    //String message = textView.getText().toString();
+                    String message ="1";
                     sendMessage(message);
                 }
             }
@@ -189,9 +187,6 @@ public class BluetoothChatFragment extends Fragment {
             mChatService.write(send);
             Log.d("B.Chat.Frag"," 7 -sendMessage(): pasamos el mensaje codificado en bytes al B.Chat:Service (funcion write)");
 
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
         }
     }
 
@@ -304,14 +299,21 @@ public class BluetoothChatFragment extends Fragment {
                     if (null != activity) {
                         Toast.makeText(activity, "Conectado con "
                                 + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                        mSendButton.setBackgroundResource(R.drawable.round_button_sinc);
+
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
                     if (null != activity) {
                         Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
                                 Toast.LENGTH_SHORT).show();
+
                     }
                     break;
+                case Constants.MESSAGE_CAMBIO_BUTTON:
+                    mSendButton.setBackgroundResource(R.drawable.round_button_nosinc);
+                    break;
+
             }
         }
     };

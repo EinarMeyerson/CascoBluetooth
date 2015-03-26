@@ -9,14 +9,14 @@
     <ListView
         android:id="@+id/in"
         android:layout_width="wrap_content"
-        android:layout_height="302dp"
+        android:layout_height="@dimen/listview_height"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll" />
 
     <Button
         android:id="@+id/button_send"
-        android:layout_width="225dp"
-        android:layout_height="225dp"
+        android:layout_width="@dimen/dimension_btn"
+        android:layout_height="@dimen/dimension_btn"
         android:background="@drawable/round_button_nosinc"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/send"
